@@ -1,5 +1,32 @@
 part of 'settings_widgets.dart';
 
+class _InternalText extends StatelessWidget {
+  final String? text;
+  final TextStyle? style;
+
+  const _InternalText({
+    Key? key,
+    this.text,
+    this.style,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _isNull(text)
+        ? SizedBox.shrink()
+        : Text(
+            _ensureNotEmpty(text),
+            style: style,
+          );
+  }
+
+  String _ensureNotEmpty(String? text) {
+    return (text?.isNotEmpty ?? false) ? text! : '';
+  }
+
+  bool _isNull(String? text) => text == null;
+}
+
 /// [SettingsScreen] is a simple Screen widget that may contain Tiles or other
 /// widgets.
 ///
@@ -69,7 +96,7 @@ part of 'settings_widgets.dart';
 /// ```
 class SettingsScreen extends StatelessWidget {
   /// Appbar title in Scaffold.
-  final String title;
+  final String? title;
 
   /// Content of the screen, body of the Scaffold.
   final List<Widget> children;
@@ -83,7 +110,10 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: _InternalText(
+          text: title,
+          style: headerTextStyle(context),
+        ),
       ),
       body: ListView.builder(
         shrinkWrap: true,
@@ -101,7 +131,7 @@ class SettingsScreen extends StatelessWidget {
 /// This widget is container for any widget which is to be used for setting.
 class _SettingsTile extends StatefulWidget {
   /// title string for the tile
-  final String title;
+  final String? title;
 
   /// widget to be placed at first in the tile
   final Widget? leading;
@@ -149,16 +179,14 @@ class __SettingsTileState extends State<_SettingsTile> {
         children: <Widget>[
           ListTile(
             leading: widget.leading,
-            title: Text(
-              widget.title,
+            title: _InternalText(
+              text: widget.title,
               style: headerTextStyle(context),
             ),
-            subtitle: widget.subtitle!.isEmpty
-                ? null
-                : Text(
-                    widget.subtitle!,
-                    style: subtitleTextStyle(context),
-                  ),
+            subtitle: _InternalText(
+              text: widget.subtitle,
+              style: subtitleTextStyle(context),
+            ),
             enabled: widget.enabled,
             onTap: widget.onTap,
             trailing: Visibility(
@@ -209,16 +237,14 @@ class __SimpleHeaderTileState extends State<_SimpleHeaderTile> {
   Widget build(BuildContext context) {
     return AbsorbPointer(
       child: ListTile(
-        title: Text(
-          widget.title ?? '',
+        title: _InternalText(
+          text: widget.title,
           style: headerTextStyle(context),
         ),
-        subtitle: (widget.subtitle?.isNotEmpty ?? false)
-            ? Text(
-                widget.subtitle!,
-                style: subtitleTextStyle(context),
-              )
-            : null,
+        subtitle: _InternalText(
+          text: widget.subtitle,
+          style: subtitleTextStyle(context),
+        ),
         leading: widget.leading,
       ),
     );
@@ -236,10 +262,10 @@ class __SimpleHeaderTileState extends State<_SimpleHeaderTile> {
 ///   but also the children widgets.
 class _ExpansionSettingsTile extends StatefulWidget {
   /// title string for the tile
-  final String title;
+  final String? title;
 
   /// subtitle string for the tile, default = ''
-  final String subtitle;
+  final String? subtitle;
 
   /// flag to represent if the tile is accessible or not, if false user input is ignored
   /// default = true
@@ -293,13 +319,13 @@ class _ExpansionSettingsTileState extends State<_ExpansionSettingsTile> {
   Widget getExpansionTile() {
     return Material(
       child: ExpansionTile(
-        title: Text(
-          widget.title,
+        title: _InternalText(
+          text: widget.title,
           style: headerTextStyle(context),
         ),
         leading: widget.leading,
-        subtitle: Text(
-          widget.subtitle,
+        subtitle: _InternalText(
+          text: widget.subtitle,
           style: subtitleTextStyle(context),
         ),
         initiallyExpanded: widget.expanded,
@@ -317,7 +343,7 @@ class _ExpansionSettingsTileState extends State<_ExpansionSettingsTile> {
 ///  tile in the SettingScreen UI or a Setting tile which needs to be shown separately.
 class _ModalSettingsTile<T> extends StatefulWidget {
   /// title string for the tile
-  final String title;
+  final String? title;
 
   /// subtitle string for the tile, default = ''
   final String? subtitle;
@@ -384,9 +410,12 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
     return Material(
       child: ListTile(
         leading: widget.leading,
-        title: Text(widget.title, style: headerTextStyle(context)),
-        subtitle: Text(
-          widget.subtitle!,
+        title: _InternalText(
+          text: widget.title,
+          style: headerTextStyle(context),
+        ),
+        subtitle: _InternalText(
+          text: widget.subtitle,
           style: subtitleTextStyle(context),
         ),
         enabled: widget.enabled,
@@ -420,14 +449,13 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
   }
 
   Widget getTitle() {
+    final titleWidget = _InternalText(
+      text: widget.title,
+      style: headerTextStyle(context),
+    );
     return widget.leading != null
-        ? Row(
-            children: <Widget>[
-              widget.leading!,
-              Text(widget.title, style: headerTextStyle(context)),
-            ],
-          )
-        : Text(widget.title, style: headerTextStyle(context));
+        ? Row(children: <Widget>[widget.leading!, titleWidget])
+        : titleWidget;
   }
 
   List<Widget> _addActionWidgets(
@@ -689,7 +717,7 @@ class _SettingsSlider extends StatelessWidget {
 /// from pallet of colors
 class _SettingsColorPicker extends StatelessWidget {
   /// title of the settings tile and color pallet dialog
-  final String title;
+  final String? title;
 
   final String subtitle;
 
