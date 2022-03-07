@@ -132,6 +132,11 @@ class _SettingsTile extends StatefulWidget {
   /// flag to show the child below the main tile elements
   final bool showChildBelow;
 
+  final Widget? customListTile;
+
+  /// flag to show the Divider for this tile
+  final bool showDivider;
+
   _SettingsTile({
     required this.title,
     required this.child,
@@ -142,6 +147,8 @@ class _SettingsTile extends StatefulWidget {
     this.enabled = true,
     this.showChildBelow = false,
     this.leading,
+    this.customListTile,
+    this.showDivider = true,
   });
 
   @override
@@ -162,10 +169,11 @@ class __SettingsTileState extends State<_SettingsTile> {
         children: <Widget>[
           ListTile(
             leading: widget.leading,
-            title: Text(
-              widget.title,
-              style: widget.titleTextStyle ?? headerTextStyle(context),
-            ),
+            title: widget.customListTile ??
+                Text(
+                  widget.title,
+                  style: widget.titleTextStyle ?? headerTextStyle(context),
+                ),
             subtitle: widget.subtitle?.isEmpty ?? true
                 ? null
                 : Text(
@@ -186,7 +194,7 @@ class __SettingsTileState extends State<_SettingsTile> {
             visible: widget.showChildBelow,
             child: widget.child,
           ),
-          _SettingsTileDivider(),
+          if (widget.showDivider) _SettingsTileDivider(),
         ],
       ),
     );

@@ -97,6 +97,79 @@ class SimpleSettingsTile extends StatelessWidget {
   }
 }
 
+/// [CustomSimpleSettingsTile] is a simple settings tile that can open a new screen
+/// by tapping the tile.
+///
+/// Example:
+/// ```dart
+/// CustomSimpleSettingsTile(
+///   title: 'Advanced',
+///   subtitle: 'More, advanced settings.'
+///   child: SettingsScreen(
+///     title: 'Sub menu',
+///     children: <Widget>[
+///       CheckboxSettingsTile(
+///         settingsKey: 'key-of-your-setting',
+///         title: 'This is a simple Checkbox',
+///       ),
+///     ],
+///   ),
+/// );
+/// ```
+class CustomSimpleSettingsTile extends StatelessWidget {
+  /// flag which represents the state of the settings, if false the the tile will
+  /// ignore all the user inputs, default = true
+  final bool enabled;
+
+  /// widget that will be displayed on tap of the tile
+  final Widget? child;
+
+  final VoidCallback? onTap;
+
+  ///ListTile or Widget that will be displayed
+  final Widget customListTile;
+
+  /// flag to show the Divider for this tile
+  final bool showDivider;
+
+  CustomSimpleSettingsTile({
+    this.child,
+    this.enabled = true,
+    this.onTap,
+    required this.customListTile,
+    this.showDivider = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsTile(
+      title: '',
+      customListTile: customListTile,
+      enabled: enabled,
+      showDivider: showDivider,
+      onTap: () => _handleTap(context),
+      child: child != null ? getIcon(context) : Text(''),
+    );
+  }
+
+  Widget getIcon(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.navigate_next),
+      onPressed: enabled ? () => _handleTap(context) : null,
+    );
+  }
+
+  void _handleTap(BuildContext context) {
+    onTap?.call();
+
+    if (child != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => child!,
+      ));
+    }
+  }
+}
+
 /// [ModalSettingsTile] is a widget which allows creating
 /// a setting which shows the [children] in a [_ModalSettingsTile]
 ///
@@ -369,16 +442,17 @@ class SettingsGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var elements = <Widget>[
-      Container(
-        padding: const EdgeInsets.only(top: 16.0, left: 0.0, right: 22.0),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            title.toUpperCase(),
-            style: groupStyle(context),
+      if (title.isNotEmpty)
+        Container(
+          padding: const EdgeInsets.only(top: 16.0, left: 0.0, right: 22.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title.toUpperCase(),
+              style: groupStyle(context),
+            ),
           ),
         ),
-      ),
     ];
 
     if (subtitle.isNotEmpty) {
