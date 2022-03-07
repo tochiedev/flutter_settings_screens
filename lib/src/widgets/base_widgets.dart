@@ -70,12 +70,14 @@ part of 'settings_widgets.dart';
 class SettingsScreen extends StatelessWidget {
   /// Appbar title in Scaffold.
   final String title;
+  final EdgeInsets contentPadding;
 
   /// Content of the screen, body of the Scaffold.
   final List<Widget> children;
 
   SettingsScreen({
     required this.children,
+    this.contentPadding = const EdgeInsets.all(16.0),
     this.title = 'Settings',
   });
 
@@ -85,12 +87,15 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemCount: children.length,
-        itemBuilder: (BuildContext context, int index) {
-          return children[index];
-        },
+      body: SafeArea(
+        minimum: contentPadding,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: children.length,
+          itemBuilder: (BuildContext context, int index) {
+            return children[index];
+          },
+        ),
       ),
     );
   }
@@ -165,8 +170,7 @@ class __SettingsTileState extends State<_SettingsTile> {
                 ? null
                 : Text(
                     widget.subtitle!,
-                    style:
-                        widget.subtitleTextStyle ?? subtitleTextStyle(context),
+                    style: widget.subtitleTextStyle ?? subtitleTextStyle(context),
                   ),
             enabled: widget.enabled,
             onTap: widget.onTap,
@@ -174,10 +178,9 @@ class __SettingsTileState extends State<_SettingsTile> {
               visible: !widget.showChildBelow,
               child: widget.child,
             ),
-            dense: true,
+            // dense: true,
             // wrap only if the subtitle is longer than 70 characters
-            isThreeLine: (widget.subtitle?.isNotEmpty ?? false) &&
-                widget.subtitle!.length > 70,
+            isThreeLine: (widget.subtitle?.isNotEmpty ?? false) && widget.subtitle!.length > 70,
           ),
           Visibility(
             visible: widget.showChildBelow,
@@ -413,8 +416,7 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
     return Material(
       child: ListTile(
         leading: widget.leading,
-        title: Text(widget.title,
-            style: widget.titleTextStyle ?? headerTextStyle(context)),
+        title: Text(widget.title, style: widget.titleTextStyle ?? headerTextStyle(context)),
         subtitle: Text(
           widget.subtitle!,
           style: widget.subtitleTextStyle ?? subtitleTextStyle(context),
@@ -441,8 +443,7 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
         });
   }
 
-  List<Widget> _finalWidgets(
-      BuildContext dialogContext, List<Widget> children) {
+  List<Widget> _finalWidgets(BuildContext dialogContext, List<Widget> children) {
     if (!widget.showConfirmation) {
       return children;
     }
@@ -460,8 +461,7 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
         : Text(widget.title, style: headerTextStyle(context));
   }
 
-  List<Widget> _addActionWidgets(
-      BuildContext dialogContext, List<Widget> children) {
+  List<Widget> _addActionWidgets(BuildContext dialogContext, List<Widget> children) {
     final finalList = List<Widget>.from(children);
     finalList.add(ButtonBar(
       alignment: MainAxisAlignment.end,
@@ -474,8 +474,7 @@ class __ModalSettingsTileState extends State<_ModalSettingsTile> {
             widget.onCancel?.call();
             _disposeDialog(dialogContext);
           },
-          child:
-              Text(MaterialLocalizations.of(dialogContext).cancelButtonLabel),
+          child: Text(MaterialLocalizations.of(dialogContext).cancelButtonLabel),
         ),
         TextButton(
           style: TextButton.styleFrom(
@@ -710,12 +709,9 @@ class _SettingsSlider extends StatelessWidget {
       min: min,
       max: max,
       divisions: (max - min) ~/ (step),
-      onChangeStart: enabled && !eagerUpdate
-          ? (value) => onChangeStart?.call(value)
-          : null,
+      onChangeStart: enabled && !eagerUpdate ? (value) => onChangeStart?.call(value) : null,
       onChanged: enabled ? (value) => onChanged?.call(value) : null,
-      onChangeEnd:
-          enabled && !eagerUpdate ? (value) => onChangeEnd?.call(value) : null,
+      onChangeEnd: enabled && !eagerUpdate ? (value) => onChangeEnd?.call(value) : null,
     );
   }
 }
