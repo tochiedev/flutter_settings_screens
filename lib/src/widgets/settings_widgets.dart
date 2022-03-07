@@ -295,7 +295,7 @@ class SettingsContainer extends StatelessWidget {
       ),
       child: Material(
         child: Container(
-          padding: EdgeInsets.only(left: leftPadding),
+          // padding: EdgeInsets.only(left: leftPadding),
           child: child,
         ),
       ),
@@ -370,7 +370,7 @@ class SettingsGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     var elements = <Widget>[
       Container(
-        padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 22.0),
+        padding: const EdgeInsets.only(top: 16.0, left: 0.0, right: 22.0),
         child: Align(
           alignment: Alignment.centerLeft,
           child: Text(
