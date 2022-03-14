@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../flutter_settings_screens.dart';
 import '../utils/widget_utils.dart';
 import 'color_picker/material_color_picker.dart';
+import 'language_picker_widget.dart';
 
 part 'base_widgets.dart';
+part 'custom_widgets.dart';
 
 /// --------- Types of Settings widgets ---------- ///
 
