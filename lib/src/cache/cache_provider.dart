@@ -1,5 +1,3 @@
-import 'package:flutter_settings_screens/flutter_settings_screens.dart';
-
 /// This is an abstract class to provide access of storage/preferences platform
 /// from the developer's existing app to this settings screen
 ///
